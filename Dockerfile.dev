@@ -1,0 +1,31 @@
+# Dockerfile para desarrollo
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Instalar dependencias globales necesarias
+RUN npm install -g concurrently
+
+# Copiar package.json principal
+COPY package*.json ./
+
+# Copiar package.json de ambas aplicaciones
+COPY apps/backend/package*.json ./backend/
+COPY apps/frontend/package*.json ./frontend/
+
+# Instalar dependencias
+RUN npm install
+RUN cd backend && npm install
+RUN cd frontend && npm install
+
+# Copiar código fuente
+COPY apps ./apps
+
+# Exponer puertos
+EXPOSE 3001 5173
+
+# Variables de entorno para desarrollo
+ENV NODE_ENV=development
+
+# Comando de desarrollo
+CMD ["npm", "run", "dev"]

@@ -19,7 +19,12 @@
     "install:all": "npm install && cd apps/backend && npm install && cd ../frontend && npm install",
     "test": "npm run test:backend && npm run test:frontend",
     "test:backend": "cd apps/backend && npm run test",
-    "test:frontend": "cd apps/frontend && npm run test"
+    "test:frontend": "cd apps/frontend && npm run test",
+    "docker:build": "docker build -t generadorec .",
+    "docker:run": "docker run -p 3001:3001 generadorec",
+    "docker:dev": "docker-compose --profile dev up --build",
+    "docker:prod": "docker-compose up --build",
+    "docker:stop": "docker-compose down"
   },
   "keywords": [
     "ecuador",
