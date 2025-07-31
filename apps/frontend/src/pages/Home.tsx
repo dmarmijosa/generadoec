@@ -189,7 +189,7 @@ const Home = () => {
                       <span className="text-xs text-gray-500 block">
                         Cédula:
                       </span>
-                      <p className="font-mono text-sm font-medium">
+                      <p className="font-mono text-sm font-medium text-black">
                         {person.cedula}
                       </p>
                     </div>
@@ -198,7 +198,7 @@ const Home = () => {
                       <span className="text-xs text-gray-500 block">
                         Nombre:
                       </span>
-                      <p className="text-sm font-medium">
+                      <p className="text-sm font-medium text-black">
                         {person.nombre} {person.apellido}
                       </p>
                     </div>
@@ -207,14 +207,14 @@ const Home = () => {
                       <span className="text-xs text-gray-500 block">
                         Profesión:
                       </span>
-                      <p className="text-sm">{person.profesion}</p>
+                      <p className="text-sm text-black">{person.profesion}</p>
                     </div>
 
                     <div>
                       <span className="text-xs text-gray-500 block">
                         Ubicación:
                       </span>
-                      <p className="text-sm">
+                      <p className="text-sm text-black">
                         {person.canton}, {person.provincia}
                       </p>
                     </div>
@@ -223,7 +223,7 @@ const Home = () => {
                       <span className="text-xs text-gray-500 block">
                         Contacto:
                       </span>
-                      <p className="text-xs font-mono">{person.telefono}</p>
+                      <p className="text-xs font-mono text-black">{person.telefono}</p>
                       <p className="text-xs break-all text-gray-600">
                         {person.email}
                       </p>
