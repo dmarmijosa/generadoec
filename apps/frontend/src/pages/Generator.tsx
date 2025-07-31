@@ -5,6 +5,7 @@ import {
   type GeneratedData,
   type GenerationOptions,
 } from "../services/api.service";
+import { analytics } from "../config/analytics";
 
 const Generator = () => {
   const [quantity, setQuantity] = useState(10);
@@ -37,6 +38,9 @@ const Generator = () => {
 
       const data = await apiService.generatePeople(options);
       setGeneratedData(data);
+
+      // Track analytics event
+      analytics.generatePeople(quantity);
     } catch (error) {
       console.error("Error al generar datos:", error);
       // En caso de error, mostrar mensaje pero mantener la funcionalidad

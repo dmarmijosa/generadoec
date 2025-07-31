@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, Zap, Users, Copy } from "lucide-react";
 import { apiService, type GeneratedData } from "../services/api.service";
+import { analytics } from "../config/analytics";
 
 const Home = () => {
   const [previewData, setPreviewData] = useState<GeneratedData[]>([]);
@@ -83,6 +84,10 @@ const Home = () => {
         setIsLoading(true);
         const data = await apiService.getQuickData(3);
         setPreviewData(data);
+
+        // Track home page visit and quick data generation
+        analytics.visitHome();
+        analytics.generateQuick();
       } catch (error) {
         console.error("Error al cargar datos de vista previa:", error);
         // En caso de error, mostrar un mensaje al usuario

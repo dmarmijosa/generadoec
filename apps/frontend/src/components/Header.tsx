@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Menu, X, Coffee } from "lucide-react";
 import { useState } from "react";
 import { environment } from "../environments/environment";
+import { analytics } from "../config/analytics";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,18 +30,21 @@ const Header = () => {
               <Link
                 to="/"
                 className="text-gray-700 hover:text-ecuador-blue transition-colors font-medium"
+                onClick={() => analytics.visitHome()}
               >
                 Inicio
               </Link>
               <Link
                 to="/generator"
                 className="text-gray-700 hover:text-ecuador-blue transition-colors font-medium"
+                onClick={() => analytics.visitGenerator()}
               >
                 Generador
               </Link>
               <Link
                 to="/about"
                 className="text-gray-700 hover:text-ecuador-blue transition-colors font-medium"
+                onClick={() => analytics.visitAbout()}
               >
                 Acerca de
               </Link>
@@ -51,6 +55,7 @@ const Header = () => {
               href={environment.author.buyMeACoffee}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => analytics.visitBuyMeCoffee()}
               className="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors text-sm font-medium shadow-sm"
             >
               <Coffee size={16} className="mr-2" />
@@ -65,6 +70,7 @@ const Header = () => {
               href={environment.author.buyMeACoffee}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => analytics.visitBuyMeCoffee()}
               className="flex items-center px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors text-xs font-medium"
             >
               <Coffee size={14} className="mr-1" />☕
@@ -84,21 +90,30 @@ const Header = () => {
               <Link
                 to="/"
                 className="text-gray-700 hover:text-ecuador-blue transition-colors font-medium px-2 py-1 rounded"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  analytics.visitHome();
+                }}
               >
                 Inicio
               </Link>
               <Link
                 to="/generator"
                 className="text-gray-700 hover:text-ecuador-blue transition-colors font-medium px-2 py-1 rounded"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  analytics.visitGenerator();
+                }}
               >
                 Generador
               </Link>
               <Link
                 to="/about"
                 className="text-gray-700 hover:text-ecuador-blue transition-colors font-medium px-2 py-1 rounded"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  analytics.visitAbout();
+                }}
               >
                 Acerca de
               </Link>
@@ -112,7 +127,10 @@ const Header = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center px-4 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors font-medium"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  analytics.visitBuyMeCoffee();
+                }}
               >
                 <Coffee size={18} className="mr-2" />
                 Buy me a coffee ☕

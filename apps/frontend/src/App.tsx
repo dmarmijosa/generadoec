@@ -3,7 +3,9 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
+import { useEffect } from "react";
 import Header from "./components/Header";
 import DisclaimerBanner from "./components/DisclaimerBanner";
 import FloatingCoffeeButton from "./components/FloatingCoffeeButton";
@@ -11,11 +13,24 @@ import Home from "./pages/Home";
 import Generator from "./pages/Generator";
 import About from "./pages/About";
 import { environment } from "./environments/environment";
+import { trackPageView } from "./config/analytics";
 import "./App.css";
+
+// Component to track page views
+function AnalyticsTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    trackPageView(location.pathname + location.search);
+  }, [location]);
+
+  return null;
+}
 
 function App() {
   return (
     <Router>
+      <AnalyticsTracker />
       <div className="min-h-screen bg-gray-50 w-full">
         <Header />
         <DisclaimerBanner />

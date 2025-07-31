@@ -49,6 +49,20 @@ Sistema completo de generación de datos ecuatorianos con backend en NestJS y fr
 - **Botón de donación** flotante para Buy Me a Coffee
 - **Información del autor** en footer
 
+### ✅ Google Analytics
+- **Firebase Analytics** completamente integrado
+- **Tracking de navegación** automático
+- **Eventos personalizados** para generación de datos
+- **Tracking de enlaces externos** (GitHub, LinkedIn, Buy me coffee)
+- **Métricas de uso** para optimización
+
+### ✅ Containerización y Orquestación
+- **Docker multi-stage** optimizado
+- **Kubernetes manifests** completos
+- **ArgoCD GitOps** configurado
+- **Health checks** y monitoring
+- **Horizontal Pod Autoscaler** para escalado automático
+
 ## 🛠️ Comandos de Desarrollo
 
 ### Instalación
@@ -205,6 +219,50 @@ npm run build
 ```bash
 ps aux | grep node
 ```
+
+## 🚀 Despliegue en Kubernetes con ArgoCD
+
+### Preparación de la Imagen Docker
+```bash
+# Construir imagen
+docker-compose build generadorec
+
+# Etiquetar para Docker Hub
+docker tag generadoec-generadorec:latest dmarmijosa/generadorec:latest
+docker tag generadoec-generadorec:latest dmarmijosa/generadorec:v1.0.0
+
+# Subir a Docker Hub
+docker login
+docker push dmarmijosa/generadorec:latest
+docker push dmarmijosa/generadorec:v1.0.0
+```
+
+### Configuración Kubernetes
+Los manifests están en `/k8s/`:
+- `namespace.yaml` - Namespace dedicado
+- `deployment.yaml` - Deployment con 2 replicas
+- `service.yaml` - Servicio ClusterIP
+- `ingress.yaml` - Ingress con SSL
+- `configmap.yaml` - Variables de entorno
+- `hpa.yaml` - Autoscaling horizontal
+- `poddisruptionbudget.yaml` - Presupuesto de disrupción
+
+### Despliegue con ArgoCD
+Ver documentación detallada: [ARGOCD-DEPLOYMENT.md](./ARGOCD-DEPLOYMENT.md)
+
+**Pasos rápidos:**
+1. Acceder a ArgoCD UI
+2. Crear nueva aplicación con:
+   - **Repo:** `https://github.com/dmarmijosa/generadoec`
+   - **Path:** `k8s`
+   - **Namespace:** `generadorec`
+3. Habilitar sync automático
+4. Sincronizar aplicación
+
+### URLs en Producción
+- **App:** https://generadorec.dmarmijosa.com
+- **API:** https://generadorec.dmarmijosa.com/api/docs
+- **Health:** https://generadorec.dmarmijosa.com/api/generator/health
 
 ## 📝 Notas de Desarrollo
 

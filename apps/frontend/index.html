@@ -11,6 +11,31 @@
     />
     <meta name="theme-color" content="#FFDD00" />
     <title>GeneradorEC - Datos Ecuatorianos</title>
+
+    <!-- Firebase Analytics -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyDZ0iloZWkQm0-ASgtXYykI6BgB0TylrMQ",
+        authDomain: "generadorec.firebaseapp.com",
+        projectId: "generadorec",
+        storageBucket: "generadorec.firebasestorage.app",
+        messagingSenderId: "848535377388",
+        appId: "1:848535377388:web:09f7c5b1a8bf31d78b5cc9",
+        measurementId: "G-NE0W2731Y0",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+    </script>
   </head>
   <body>
     <div id="root"></div>

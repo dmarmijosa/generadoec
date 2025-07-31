@@ -1,5 +1,6 @@
 import { Coffee } from "lucide-react";
 import { environment } from "../environments/environment";
+import { analytics } from "../config/analytics";
 
 const FloatingCoffeeButton = () => {
   return (
@@ -8,6 +9,7 @@ const FloatingCoffeeButton = () => {
         href={environment.author.buyMeACoffee}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => analytics.visitBuyMeCoffee()}
         className="flex items-center px-4 py-3 bg-yellow-500 text-white rounded-full shadow-lg hover:bg-yellow-600 hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
         title="Buy me a coffee"
       >

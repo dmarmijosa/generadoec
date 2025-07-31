@@ -5,7 +5,7 @@
   "homepage": "https://generadorec.dmarmijosa.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dmarmijosa/generadorec.git"
+    "url": "https://github.com/dmarmijosa/generadoec.git"
   },
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",

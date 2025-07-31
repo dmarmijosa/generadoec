@@ -9,9 +9,16 @@ import {
   Database,
   Book,
 } from "lucide-react";
+import { useEffect } from "react";
 import { environment } from "../environments/environment";
+import { analytics } from "../config/analytics";
 
 const About = () => {
+  useEffect(() => {
+    // Track about page visit
+    analytics.visitAbout();
+  }, []);
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-8 sm:mb-12">
@@ -137,6 +144,7 @@ const About = () => {
               href={`${environment.apiUrl}/docs`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => analytics.viewApiDocs()}
               className="inline-flex items-center bg-white text-ecuador-blue px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition-colors"
             >
               Ver Documentación
@@ -261,6 +269,7 @@ const About = () => {
                 href={environment.author.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => analytics.visitLinkedIn()}
                 className="flex items-center justify-center px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
               >
                 <User size={14} className="mr-2 sm:w-4 sm:h-4" />
@@ -300,9 +309,10 @@ const About = () => {
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
           <a
-            href="https://github.com/dmarmijosa/generadorec"
+            href="https://github.com/dmarmijosa/generadoec"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => analytics.visitGitHub()}
             className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
           >
             <Github size={16} className="mr-2 sm:w-5 sm:h-5" />

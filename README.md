@@ -119,10 +119,10 @@ Todos los endpoints devuelven un formato consistente:
 - Git
 
 ### Clonar el repositorio
-\`\`\`bash
-git clone https://github.com/dmarmijosa/generadorec.git
-cd generadorec
-\`\`\`
+```bash
+git clone https://github.com/dmarmijosa/generadoec.git
+cd generadoec
+```
 
 ### Instalar dependencias
 \`\`\`bash
