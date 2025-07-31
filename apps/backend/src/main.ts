@@ -11,12 +11,14 @@ async function bootstrap() {
   // Configurar Swagger
   const config = new DocumentBuilder()
     .setTitle('GeneradorEC API')
-    .setDescription('API para generar datos ecuatorianos válidos para desarrollo y testing')
+    .setDescription(
+      'API para generar datos ecuatorianos válidos para desarrollo y testing',
+    )
     .setVersion('1.0.0')
     .setContact(
       'Danny Armijos',
       'https://www.danny-armijos.com/',
-      'support-client@dmarmijosa.com'
+      'support-client@dmarmijosa.com',
     )
     .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addServer('http://localhost:3000', 'Servidor Local')
@@ -29,7 +31,6 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document, {
     customSiteTitle: 'GeneradorEC API Documentation',
     customfavIcon: '/favicon.ico',
-    customCssUrl: null,
     swaggerOptions: {
       persistAuthorization: true,
       displayRequestDuration: true,
@@ -53,12 +54,9 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`🚀 Backend ejecutándose en http://localhost:${port}`);
-  console.log(`📚 Documentación API disponible en http://localhost:${port}/api/docs`);
-  console.log(`📦 Entorno: ${nodeEnv}`);
-  console.log(`🌐 CORS habilitado para: ${corsOrigins.join(', ')}`);
-}
-
-  console.log(`🚀 Backend ejecutándose en http://localhost:${port}`);
+  console.log(
+    `📚 Documentación API disponible en http://localhost:${port}/api/docs`,
+  );
   console.log(`📦 Entorno: ${nodeEnv}`);
   console.log(`🌐 CORS habilitado para: ${corsOrigins.join(', ')}`);
 }

@@ -1,10 +1,10 @@
-# Dockerfile para desarrollo
-FROM node:18-alpine
+# Dockerfile para desarrollo con hot reload
+FROM node:22-alpine
 
 WORKDIR /app
 
 # Instalar dependencias globales necesarias
-RUN npm install -g concurrently
+RUN npm install -g concurrently nodemon
 
 # Copiar package.json principal
 COPY package*.json ./
@@ -13,19 +13,26 @@ COPY package*.json ./
 COPY apps/backend/package*.json ./backend/
 COPY apps/frontend/package*.json ./frontend/
 
-# Instalar dependencias
-RUN npm install
-RUN cd backend && npm install
-RUN cd frontend && npm install
+# Instalar dependencias con cache optimizado
+RUN npm ci --silent
+RUN cd backend && npm ci --silent
+RUN cd frontend && npm ci --silent
 
 # Copiar código fuente
 COPY apps ./apps
 
-# Exponer puertos
-EXPOSE 3001 5173
+# Exponer puertos (backend 3000, frontend 5173)
+EXPOSE 3000 5173
 
 # Variables de entorno para desarrollo
 ENV NODE_ENV=development
+ENV API_TITLE="GeneradorEC API (Development)"
+ENV API_DESCRIPTION="API para generar datos ecuatorianos válidos - Entorno de Desarrollo"
+ENV CORS_ORIGINS="http://localhost:5173,http://localhost:3000"
 
-# Comando de desarrollo
-CMD ["npm", "run", "dev"]
+# Health check para desarrollo
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
+
+# Comando de desarrollo con información
+CMD ["sh", "-c", "echo '🚀 Iniciando GeneradorEC en modo desarrollo' && echo '📚 API Docs: http://localhost:3000/api/docs' && echo '🌐 Frontend: http://localhost:5173' && npm run dev"]
