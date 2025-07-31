@@ -12,6 +12,21 @@
 
 ### 1. Construir y subir la imagen a Docker Hub
 
+**Método Recomendado: Multi-Arquitectura (usando Docker Buildx)**
+
+```bash
+# Crear y usar un nuevo builder (solo una vez)
+docker buildx create --name generadorec-builder --use
+
+# Construir y subir imágenes multi-arquitectura
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t dmarmijosa/generadorec:latest \
+  -t dmarmijosa/generadorec:v1.0.0 \
+  --push .
+```
+
+**Método Alternativo: Arquitectura Simple**
+
 ```bash
 # Etiquetar la imagen
 docker tag generadoec-generadorec:latest dmarmijosa/generadorec:latest
@@ -24,6 +39,8 @@ docker login
 docker push dmarmijosa/generadorec:latest
 docker push dmarmijosa/generadorec:v1.0.0
 ```
+
+> **⚠️ Nota Importante:** El método multi-arquitectura previene errores de "exec format error" cuando se despliega en clusters con diferentes arquitecturas de CPU (ARM64/AMD64).
 
 ## 🚀 Despliegue en ArgoCD
 
