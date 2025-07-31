@@ -1,0 +1,42 @@
+{
+  "name": "generadoec",
+  "version": "1.0.0",
+  "description": "Generador de datos ecuatorianos - Sistema completo",
+  "homepage": "https://generadorec.dmarmijosa.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dmarmijosa/generadorec.git"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd apps/backend && npm run start:dev",
+    "dev:frontend": "cd apps/frontend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:backend": "cd apps/backend && npm run build",
+    "build:frontend": "cd apps/frontend && npm run build",
+    "start": "cd apps/backend && npm run start:prod",
+    "start:prod": "npm run build && npm run start",
+    "install:all": "npm install && cd apps/backend && npm install && cd ../frontend && npm install",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd apps/backend && npm run test",
+    "test:frontend": "cd apps/frontend && npm run test"
+  },
+  "keywords": [
+    "ecuador",
+    "generator",
+    "cedula",
+    "data",
+    "nestjs",
+    "react"
+  ],
+  "author": {
+    "name": "Danny Armijos",
+    "email": "support-client@dmarmijosa.com",
+    "url": "https://www.danny-armijos.com/"
+  },
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
