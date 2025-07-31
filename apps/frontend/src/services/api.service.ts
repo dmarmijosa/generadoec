@@ -1,4 +1,9 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+import { config, logConfig } from '../config/config';
+
+// Log de configuración al importar (solo en desarrollo)
+logConfig();
+
+const API_BASE_URL = config.apiUrl;
 
 export interface GeneratedData {
   cedula: string;

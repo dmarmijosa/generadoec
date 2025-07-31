@@ -8,17 +8,20 @@ export class CedulaUtils {
     // Si no se proporciona código de provincia, usar uno aleatorio
     const province = provinceCode || this.getRandomProvinceCode();
 
-    // Generar los siguientes 6 dígitos secuenciales
-    const sequentialDigits = this.generateRandomDigits(6);
+    // El tercer dígito debe ser menor a 6 para personas naturales (0-5)
+    const thirdDigit = Math.floor(Math.random() * 6).toString();
+
+    // Generar los siguientes 6 dígitos aleatorios
+    const remainingDigits = this.generateRandomDigits(6);
     
-    // Los primeros 8 dígitos son: provincia + secuencial
-    const firstEightDigits = province + sequentialDigits;
+    // Los primeros 9 dígitos son: provincia + tercer dígito + 6 dígitos aleatorios
+    const firstNineDigits = province + thirdDigit + remainingDigits;
 
-    // Calcular el dígito verificador
-    const checkDigit = this.calculateCheckDigit(firstEightDigits);
+    // Calcular el dígito verificador (décimo dígito)
+    const checkDigit = this.calculateCheckDigit(firstNineDigits);
 
-    // El último dígito para personas naturales es siempre 0
-    return firstEightDigits + checkDigit + '0';
+    // Retornar los 9 dígitos + el dígito verificador
+    return firstNineDigits + checkDigit;
   }
 
   /**
@@ -32,27 +35,28 @@ export class CedulaUtils {
     const province = parseInt(cedula.substring(0, 2));
     if (province < 1 || province > 24) return false;
 
-    // El último dígito debe ser 0 para personas naturales
-    if (cedula.charAt(9) !== '0') return false;
+    // Para personas naturales, el tercer dígito debe ser menor a 6
+    const thirdDigit = parseInt(cedula.charAt(2));
+    if (thirdDigit >= 6) return false;
 
-    const firstEightDigits = cedula.substring(0, 8);
-    const checkDigit = parseInt(cedula.charAt(8));
-    const calculatedCheckDigit = this.calculateCheckDigit(firstEightDigits);
+    const firstNineDigits = cedula.substring(0, 9);
+    const checkDigit = parseInt(cedula.charAt(9));
+    const calculatedCheckDigit = this.calculateCheckDigit(firstNineDigits);
 
     return checkDigit === calculatedCheckDigit;
   }
 
   /**
    * Calcula el dígito verificador según el algoritmo ecuatoriano
-   * @param firstEightDigits Primeros 8 dígitos de la cédula
+   * @param firstNineDigits Primeros 9 dígitos de la cédula
    * @returns Dígito verificador
    */
-  private static calculateCheckDigit(firstEightDigits: string): number {
-    const coefficients = [2, 1, 2, 1, 2, 1, 2, 1];
+  private static calculateCheckDigit(firstNineDigits: string): number {
+    const coefficients = [2, 1, 2, 1, 2, 1, 2, 1, 2];
     let sum = 0;
 
-    for (let i = 0; i < 8; i++) {
-      let product = parseInt(firstEightDigits.charAt(i)) * coefficients[i];
+    for (let i = 0; i < 9; i++) {
+      let product = parseInt(firstNineDigits.charAt(i)) * coefficients[i];
       if (product >= 10) {
         product = Math.floor(product / 10) + (product % 10);
       }
@@ -145,30 +149,30 @@ export class CedulaUtils {
    */
   static testCedulaAlgorithm(): boolean {
     console.log('🧪 Probando algoritmo de cédulas ecuatorianas...');
-    
+
     // Generar 10 cédulas y validarlas
     for (let i = 0; i < 10; i++) {
       const cedula = this.generateValidCedula();
       const isValid = this.isValidCedula(cedula);
       console.log(`Cédula: ${cedula} - Válida: ${isValid}`);
-      
+
       if (!isValid) {
         console.error(`❌ Error: Cédula generada ${cedula} no es válida`);
         return false;
       }
     }
-    
+
     // Probar cédulas conocidas válidas
     const validCedulas = [
       '1714616123', // Ejemplo válido de Pichincha
       '0926687856', // Ejemplo válido de Guayas
     ];
-    
+
     for (const cedula of validCedulas) {
       const isValid = this.isValidCedula(cedula);
       console.log(`Cédula conocida: ${cedula} - Válida: ${isValid}`);
     }
-    
+
     console.log('✅ Todas las pruebas del algoritmo de cédulas pasaron');
     return true;
   }

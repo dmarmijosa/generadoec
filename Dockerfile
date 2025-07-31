@@ -53,11 +53,11 @@ RUN chown -R nextjs:nodejs /app
 USER nextjs
 
 # Exponer puerto
-EXPOSE 3001
+EXPOSE 3000
 
 # Variables de entorno
 ENV NODE_ENV=production
-ENV PORT=3001
+ENV PORT=3000
 
 # Comando de inicio
 CMD ["node", "dist/main"]

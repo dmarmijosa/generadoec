@@ -7,16 +7,25 @@ async function bootstrap() {
   // Configurar prefijo global para la API
   app.setGlobalPrefix('api');
 
-  // Habilitar CORS para desarrollo
+  // Configurar CORS con variables de entorno
+  const corsOrigins = process.env.CORS_ORIGINS 
+    ? process.env.CORS_ORIGINS.split(',')
+    : ['http://localhost:5173', 'http://localhost:3000'];
+
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: corsOrigins,
     credentials: true,
   });
 
-  // Configurar puerto
-  const port = process.env.PORT || 3001;
+  // Configurar puerto desde variables de entorno
+  const port = parseInt(process.env.PORT || '3000', 10);
+  const nodeEnv = process.env.NODE_ENV || 'development';
 
   await app.listen(port);
+  
   console.log(`🚀 Backend ejecutándose en http://localhost:${port}`);
+  console.log(`📦 Entorno: ${nodeEnv}`);
+  console.log(`🌐 CORS habilitado para: ${corsOrigins.join(', ')}`);
 }
-void bootstrap();
+
+bootstrap();
