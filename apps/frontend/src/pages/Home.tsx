@@ -81,7 +81,7 @@ const Home = () => {
     const loadPreviewData = async () => {
       try {
         setIsLoading(true);
-        const data = await apiService.generateQuickData(3);
+        const data = await apiService.getQuickData(3);
         setPreviewData(data);
       } catch (error) {
         console.error("Error al cargar datos de vista previa:", error);

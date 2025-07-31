@@ -31,7 +31,7 @@ const Generator = () => {
     try {
       const options: GenerationOptions = {
         quantity,
-        includeRUC: selectedFields.ruc,
+        includeRuc: selectedFields.ruc,
         includeCompany: selectedFields.empresa,
       };
 
@@ -49,7 +49,7 @@ const Generator = () => {
   // Verificar estado del backend al cargar
   useEffect(() => {
     const checkBackend = async () => {
-      await apiService.healthCheck();
+      await apiService.checkHealth();
     };
 
     checkBackend();

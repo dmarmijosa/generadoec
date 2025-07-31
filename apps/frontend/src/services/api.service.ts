@@ -23,13 +23,16 @@ export interface GeneratedData {
 
 export interface GenerationOptions {
   quantity: number;
-  includeRUC?: boolean;
+  includeRuc?: boolean;
   includeCompany?: boolean;
-  province?: string;
-  ageRange?: {
-    min: number;
-    max: number;
-  };
+  provinceFilter?: string;
+  genderFilter?: "M" | "F";
+}
+
+export interface Province {
+  code: string;
+  name: string;
+  cantons: string[];
 }
 
 export interface ApiResponse<T> {
@@ -48,7 +51,7 @@ class ApiService {
    */
   async generatePeople(options: GenerationOptions): Promise<GeneratedData[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/generator/people`, {
+      const response = await fetch(`${this.baseUrl}/generator/people`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,9 +79,11 @@ class ApiService {
   /**
    * Genera datos de empresas ecuatorianas
    */
-  async generateCompanies(options: GenerationOptions) {
+  async generateCompanies(
+    options: GenerationOptions
+  ): Promise<GeneratedData[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/generator/companies`, {
+      const response = await fetch(`${this.baseUrl}/generator/companies`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,7 +95,7 @@ class ApiService {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
+      const result: ApiResponse<GeneratedData[]> = await response.json();
 
       if (!result.success) {
         throw new Error(result.error || "Error al generar datos de empresas");
@@ -104,17 +109,17 @@ class ApiService {
   }
 
   /**
-   * Obtiene la lista de provincias disponibles
+   * Obtiene la lista de provincias ecuatorianas
    */
-  async getProvinces() {
+  async getProvinces(): Promise<Province[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/generator/provinces`);
+      const response = await fetch(`${this.baseUrl}/generator/provinces`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
+      const result: ApiResponse<Province[]> = await response.json();
 
       if (!result.success) {
         throw new Error(result.error || "Error al obtener provincias");
@@ -128,22 +133,15 @@ class ApiService {
   }
 
   /**
-   * Genera datos rápidamente (para ejemplo automático)
+   * Genera datos rápidos para la página principal
    */
-  async generateQuickData(
-    quantity: number = 5,
-    province?: string
-  ): Promise<GeneratedData[]> {
+  async getQuickData(quantity: number = 5): Promise<GeneratedData[]> {
     try {
-      const params = new URLSearchParams();
-      params.append("quantity", quantity.toString());
-      if (province) {
-        params.append("province", province);
-      }
+      const params = new URLSearchParams({
+        quantity: quantity.toString(),
+      });
 
-      const response = await fetch(
-        `${this.baseUrl}/api/generator/quick?${params}`
-      );
+      const response = await fetch(`${this.baseUrl}/generator/quick?${params}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -152,99 +150,112 @@ class ApiService {
       const result: ApiResponse<GeneratedData[]> = await response.json();
 
       if (!result.success) {
-        throw new Error(result.error || "Error al generar datos rápidos");
+        throw new Error(result.error || "Error al obtener datos rápidos");
       }
 
       return result.data;
     } catch (error) {
-      console.error("Error al generar datos rápidos:", error);
-      // En caso de error, retornar datos mock para no romper la UI
-      return this.getMockData(quantity);
+      console.error("Error al obtener datos rápidos:", error);
+      throw error;
     }
   }
 
   /**
-   * Verifica el estado del backend
+   * Verifica el estado del servicio
    */
-  async healthCheck() {
+  async checkHealth(): Promise<{
+    status: string;
+    service: string;
+    version: string;
+  }> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/generator/health`);
+      const response = await fetch(`${this.baseUrl}/generator/health`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const result = await response.json();
-      return result.success;
+
+      if (!result.success) {
+        throw new Error(
+          result.error || "Error al verificar estado del servicio"
+        );
+      }
+
+      return result;
     } catch (error) {
-      console.error("Error al verificar el estado del backend:", error);
-      return false;
+      console.error("Error al verificar estado:", error);
+      throw error;
     }
   }
 
   /**
-   * Datos mock para desarrollo y fallback
+   * Obtiene estadísticas del generador
    */
-  private getMockData(quantity: number): GeneratedData[] {
-    const mockData: GeneratedData[] = [];
-    const nombres = [
-      "María",
-      "José",
-      "Ana",
-      "Carlos",
-      "Luis",
-      "Carmen",
-      "Jorge",
-      "Patricia",
-    ];
-    const apellidos = [
-      "García",
-      "López",
-      "Martínez",
-      "Rodríguez",
-      "Pérez",
-      "González",
-    ];
-    const provincias = ["Pichincha", "Guayas", "Azuay", "Manabí", "El Oro"];
-    const cantones = ["Quito", "Guayaquil", "Cuenca", "Portoviejo", "Machala"];
+  async getStats(): Promise<{
+    totalGenerated: number;
+    lastGeneration: string;
+    serverUptime: string;
+  }> {
+    try {
+      const response = await fetch(`${this.baseUrl}/generator/stats`);
 
-    for (let i = 0; i < quantity; i++) {
-      const nombre = nombres[Math.floor(Math.random() * nombres.length)];
-      const apellido = apellidos[Math.floor(Math.random() * apellidos.length)];
-      const provincia =
-        provincias[Math.floor(Math.random() * provincias.length)];
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      mockData.push({
-        cedula: `17${Math.floor(Math.random() * 100000000)
-          .toString()
-          .padStart(8, "0")}`,
-        nombre,
-        apellido: `${apellido} ${
-          apellidos[Math.floor(Math.random() * apellidos.length)]
-        }`,
-        email: `${nombre.toLowerCase()}.${apellido.toLowerCase()}@example.com`,
-        telefono: `+593 98 ${Math.floor(Math.random() * 1000)
-          .toString()
-          .padStart(3, "0")} ${Math.floor(Math.random() * 10000)
-          .toString()
-          .padStart(4, "0")}`,
-        direccion: `Av. Principal ${Math.floor(Math.random() * 9999) + 1}`,
-        provincia,
-        canton: cantones[Math.floor(Math.random() * cantones.length)],
-        fechaNacimiento: `199${Math.floor(Math.random() * 10)}-${(
-          Math.floor(Math.random() * 12) + 1
-        )
-          .toString()
-          .padStart(2, "0")}-${(Math.floor(Math.random() * 28) + 1)
-          .toString()
-          .padStart(2, "0")}`,
-        genero: Math.random() < 0.5 ? "M" : "F",
-        profesion: "Ingeniero",
-      });
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || "Error al obtener estadísticas");
+      }
+
+      return result.data;
+    } catch (error) {
+      console.error("Error al obtener estadísticas:", error);
+      throw error;
     }
+  }
 
-    return mockData;
+  /**
+   * Valida una cédula ecuatoriana
+   */
+  async validateCedula(
+    cedula: string
+  ): Promise<{ valid: boolean; reason?: string }> {
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/generator/validate-cedula`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ cedula }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || "Error al validar cédula");
+      }
+
+      return result.data;
+    } catch (error) {
+      console.error("Error al validar cédula:", error);
+      throw error;
+    }
   }
 }
 
-export const apiService = new ApiService();
+// Crear y exportar instancia singleton
+const apiService = new ApiService();
+
+export { apiService };
+export default apiService;
