@@ -6,43 +6,63 @@ import { apiService, type GeneratedData } from "../services/api.service";
 const Home = () => {
   const [previewData, setPreviewData] = useState<GeneratedData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [copyMessage, setCopyMessage] = useState<string>("");
 
-  // Función para copiar datos de una persona al portapapeles
+  // Función para copiar datos de una persona al portapapeles en formato JSON
   const copyPersonDataToClipboard = async (person: GeneratedData, index: number) => {
-    const dataText = `
-=== REGISTRO #${index + 1} ===
-Cédula: ${person.cedula}
-Nombre: ${person.nombre} ${person.apellido}
-Email: ${person.email}
-Teléfono: ${person.telefono}
-Dirección: ${person.direccion}
-Provincia: ${person.provincia}
-Cantón: ${person.canton}
-Fecha de Nacimiento: ${person.fechaNacimiento}
-Género: ${person.genero === 'M' ? 'Masculino' : 'Femenino'}
-Profesión: ${person.profesion}
-${person.ruc ? `RUC: ${person.ruc}` : ''}
-${person.empresa ? `Empresa: ${person.empresa}` : ''}
-`.trim();
+    // Crear objeto JSON limpio con todos los datos
+    const jsonData = {
+      registro: index + 1,
+      cedula: person.cedula,
+      nombre: person.nombre,
+      apellido: person.apellido,
+      nombreCompleto: `${person.nombre} ${person.apellido}`,
+      email: person.email,
+      telefono: person.telefono,
+      direccion: person.direccion,
+      provincia: person.provincia,
+      canton: person.canton,
+      fechaNacimiento: person.fechaNacimiento,
+      genero: person.genero,
+      generoTexto: person.genero === 'M' ? 'Masculino' : 'Femenino',
+      profesion: person.profesion,
+      ...(person.ruc && { ruc: person.ruc }),
+      ...(person.empresa && { empresa: person.empresa })
+    };
+
+    const jsonString = JSON.stringify(jsonData, null, 2);
 
     try {
-      await navigator.clipboard.writeText(dataText);
-      // Mostrar feedback visual temporal
+      await navigator.clipboard.writeText(jsonString);
+      
+      // Mostrar mensaje de confirmación
+      setCopyMessage(`✅ Registro #${index + 1} copiado como JSON`);
+      setTimeout(() => setCopyMessage(""), 3000);
+      
+      // Mostrar feedback visual temporal en la tarjeta
       const element = document.getElementById(`person-card-${index}`);
       if (element) {
-        element.classList.add('bg-green-50', 'border-green-200');
+        element.classList.add('bg-green-50', 'border-green-200', 'border-2');
         setTimeout(() => {
-          element.classList.remove('bg-green-50', 'border-green-200');
-        }, 1000);
+          element.classList.remove('bg-green-50', 'border-green-200', 'border-2');
+        }, 1500);
       }
     } catch (err) {
       console.error('Error al copiar al portapapeles:', err);
       // Fallback para navegadores que no soportan clipboard
       const textArea = document.createElement('textarea');
-      textArea.value = dataText;
+      textArea.value = jsonString;
       document.body.appendChild(textArea);
       textArea.select();
-      document.execCommand('copy');
+      try {
+        document.execCommand('copy');
+        setCopyMessage(`✅ Registro #${index + 1} copiado como JSON (fallback)`);
+        setTimeout(() => setCopyMessage(""), 3000);
+      } catch (fallbackErr) {
+        console.error('Error en fallback:', fallbackErr);
+        setCopyMessage(`❌ Error al copiar al portapapeles`);
+        setTimeout(() => setCopyMessage(""), 3000);
+      }
       document.body.removeChild(textArea);
     }
   };
@@ -188,12 +208,31 @@ ${person.empresa ? `Empresa: ${person.empresa}` : ''}
       {/* Preview Section */}
       <section className="py-8 sm:py-12 lg:py-16 mx-4 sm:mx-0">
         <div className="bg-gradient-to-br from-ecuador-yellow/10 to-ecuador-blue/10 rounded-xl p-4 sm:p-6 lg:p-8">
+          {/* Mensaje de confirmación de copia */}
+          {copyMessage && (
+            <div className="fixed top-4 right-4 z-50 bg-white border-l-4 border-green-500 rounded-lg shadow-lg p-4 max-w-sm">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <Copy size={20} className="text-green-500" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-900">
+                    {copyMessage}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">
               Vista Previa del Generador
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 px-4">
+            <p className="text-base sm:text-lg text-gray-600 px-4 mb-2">
               Ejemplo de datos que puedes generar con nuestra herramienta
+            </p>
+            <p className="text-sm text-ecuador-blue px-4 font-medium">
+              💡 Haz clic en cualquier tarjeta para copiar los datos en formato JSON
             </p>
           </div>
 
@@ -210,7 +249,7 @@ ${person.empresa ? `Empresa: ${person.empresa}` : ''}
                   id={`person-card-${index}`}
                   onClick={() => copyPersonDataToClipboard(person, index)}
                   className="bg-white p-4 sm:p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-transparent hover:border-ecuador-blue/20"
-                  title="Haz clic para copiar todos los datos al portapapeles"
+                  title="🔥 Clic para copiar todos los datos en formato JSON"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-base sm:text-lg font-semibold text-ecuador-blue">
