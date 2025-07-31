@@ -113,16 +113,23 @@ kubectl get hpa -n generadorec
 
 ### 2. Configurar DNS
 
-**Para producción:**
-- Configurar el dominio `generadorec.dmarmijosa.com` para apuntar a la IP del Ingress Controller
+**✅ DNS Ya Configurado:**
+- Dominio: `dmarmijosa.com` registrado en CloudNS
+- Subdominio: `generadorec.dmarmijosa.com` apuntando a IP pública del servidor ArgoCD
 
-**Para desarrollo/testing:**
+**Verificar configuración DNS:**
 ```bash
-# Obtener la IP del Ingress
-kubectl get ingress -n generadorec
+# Verificar que el dominio resuelve a tu IP
+nslookup generadorec.dmarmijosa.com
 
-# Agregar a /etc/hosts (local)
-echo "<INGRESS_IP> generadorec.dmarmijosa.com" >> /etc/hosts
+# Debe devolver tu IP pública del servidor
+dig generadorec.dmarmijosa.com +short
+```
+
+**Para desarrollo/testing local:**
+```bash
+# Solo si necesitas override local
+echo "<TU_IP_PUBLICA> generadorec.dmarmijosa.com" >> /etc/hosts
 ```
 
 ### 3. Verificar Certificados SSL
@@ -166,6 +173,166 @@ kubectl describe hpa generadorec-hpa -n generadorec
 
 ## 🛠 Troubleshooting
 
+### Problema: "Issuing certificate as Secret does not exist"
+
+Este es un problema común cuando cert-manager intenta crear certificados TLS. Aquí está la guía step-by-step para solucionarlo:
+
+#### Diagnóstico rápido:
+```bash
+# 1. Verificar el estado actual
+kubectl get ingress -n generadorec
+kubectl get certificates -n generadorec
+kubectl describe certificate generadorec-tls -n generadorec
+```
+
+#### Solución paso a paso:
+
+**Opción 1: Configurar DNS correctamente**
+1. Obtener la IP del Ingress Controller:
+```bash
+kubectl get service -n ingress-nginx
+```
+
+2. Configurar tu proveedor DNS para que `generadorec.dmarmijosa.com` apunte a esa IP.
+
+3. Verificar que resuelve:
+```bash
+nslookup generadorec.dmarmijosa.com
+```
+
+**Opción 2: Testing local sin TLS**
+1. Usar el ingress sin TLS:
+```bash
+# Aplicar ingress sin TLS
+kubectl apply -f k8s/ingress-no-tls.yaml
+
+# Configurar /etc/hosts local
+echo "$(kubectl get ingress generadorec-ingress -n generadorec -o jsonpath='{.status.loadBalancer.ingress[0].ip}') generadorec.dmarmijosa.com" | sudo tee -a /etc/hosts
+```
+
+2. Acceder via HTTP: `http://generadorec.dmarmijosa.com`
+
+**Opción 3: Configurar cert-manager desde cero**
+```bash
+# Instalar cert-manager si no está
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+
+# Crear ClusterIssuer
+kubectl apply -f - <<EOF
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: support-client@dmarmijosa.com
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+EOF
+```
+
+### Problema: "404 Not Found nginx" (Con DNS configurado)
+
+Ya tienes el DNS configurado correctamente (`generadorec.dmarmijosa.com` → tu IP pública). El 404 indica que nginx (Ingress Controller) recibe la petición pero no encuentra tu aplicación.
+
+#### Diagnóstico paso a paso:
+
+1. **Verificar que el dominio resuelve correctamente:**
+```bash
+# Debe devolver tu IP pública
+nslookup generadorec.dmarmijosa.com
+curl -I http://generadorec.dmarmijosa.com
+```
+
+2. **Verificar que los pods están corriendo:**
+```bash
+kubectl get pods -n generadorec
+kubectl describe pods -n generadorec
+```
+
+3. **Verificar que el Service está funcionando:**
+```bash
+kubectl get svc -n generadorec
+kubectl describe svc generadorec-service -n generadorec
+kubectl get endpoints -n generadorec
+```
+
+4. **Verificar configuración del Ingress:**
+```bash
+kubectl get ingress -n generadorec -o wide
+kubectl describe ingress generadorec-ingress -n generadorec
+```
+
+5. **Test directo al Service (port-forward):**
+```bash
+# Port-forward al service para testing directo
+kubectl port-forward service/generadorec-service 8080:80 -n generadorec
+
+# En otra terminal, probar:
+curl http://localhost:8080
+```
+
+6. **Verificar logs de la aplicación:**
+```bash
+# Ver logs recientes
+kubectl logs --tail=50 -l app=generadorec -n generadorec
+
+# Ver logs en tiempo real
+kubectl logs -f -l app=generadorec -n generadorec
+```
+
+#### Solución rápida para testing:
+
+**Opción 1: Usar ingress sin TLS temporalmente**
+```bash
+# Aplicar ingress sin TLS para descartar problemas de certificados
+kubectl apply -f k8s/ingress-no-tls.yaml
+
+# Probar vía HTTP
+curl http://generadorec.dmarmijosa.com
+```
+
+**Opción 2: Verificar que la aplicación funciona localmente**
+```bash
+# Test directo del container
+kubectl exec -it deployment/generadorec-app -n generadorec -- curl localhost:3000
+
+# Si responde, el problema está en el routing del Ingress
+```
+
+#### Posibles causas y soluciones:
+
+**Causa 1: Pods no están Ready**
+```bash
+# Ver logs de los pods
+kubectl logs -f deployment/generadorec-app -n generadorec
+
+# Si los pods no están listos, verificar health checks
+kubectl describe pods -n generadorec
+```
+
+**Causa 2: Selector incorrecto en el Service**
+Verificar que el Service tenga el selector correcto:
+```bash
+kubectl get deployment generadorec-app -n generadorec --show-labels
+kubectl get service generadorec-service -n generadorec -o yaml
+```
+
+**Causa 3: Puerto incorrecto en el Service**
+Verificar que el puerto del Service coincida con el puerto del contenedor:
+```bash
+# Ver qué puerto expone el pod
+kubectl describe pod -l app=generadorec -n generadorec
+```
+
+**Causa 4: Path del Ingress incorrecto**
+Si usas paths específicos, verificar que coincidan con las rutas de tu aplicación.
+
 ### Problemas Comunes
 
 #### 1. Pods no se levantan
@@ -191,13 +358,71 @@ kubectl port-forward service/generadorec-service 8080:80 -n generadorec
 # Acceder a http://localhost:8080
 ```
 
-#### 4. Problemas de certificados
+#### 4. Problemas de certificados TLS
+
+**Síntoma:** "Issuing certificate as Secret does not exist"
+
+**Posibles causas y soluciones:**
+
+1. **DNS no configurado:**
 ```bash
-# Verificar cert-manager
+# Verificar que el dominio resuelve
+nslookup generadorec.dmarmijosa.com
+
+# Si no resuelve, configurar DNS o usar /etc/hosts temporalmente
+echo "<INGRESS_IP> generadorec.dmarmijosa.com" | sudo tee -a /etc/hosts
+```
+
+2. **Verificar cert-manager:**
+```bash
+# Verificar que cert-manager está instalado
+kubectl get pods -n cert-manager
+
+# Verificar ClusterIssuer
 kubectl get clusterissuer
 
-# Verificar challenge
+# Si no existe, crear ClusterIssuer básico:
+kubectl apply -f - <<EOF
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: support-client@dmarmijosa.com
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+EOF
+```
+
+3. **Verificar el proceso de certificado:**
+```bash
+# Ver estado del certificado
 kubectl describe certificate generadorec-tls -n generadorec
+
+# Ver challenges activos
+kubectl get challenges -n generadorec
+
+# Ver certificate requests
+kubectl get certificaterequests -n generadorec
+
+# Logs de cert-manager
+kubectl logs -n cert-manager deployment/cert-manager
+```
+
+4. **Solución temporal - Deshabilitar TLS:**
+Si necesitas que funcione inmediatamente, puedes comentar la sección TLS en el ingress:
+```yaml
+# Comentar estas líneas en k8s/ingress.yaml
+# tls:
+# - hosts:
+#   - generadorec.dmarmijosa.com
+#   secretName: generadorec-tls
 ```
 
 ### Rollback
