@@ -6,9 +6,8 @@ metadata:
   labels:
     app: generadorec
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "letsencrypt-cloudns-prod"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     
     # CORS Configuration
     nginx.ingress.kubernetes.io/enable-cors: "true"
