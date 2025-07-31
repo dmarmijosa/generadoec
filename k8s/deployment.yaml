@@ -30,7 +30,7 @@ spec:
         - name: PORT
           value: "3000"
         - name: API_URL
-          value: "https://generadorec.dmarmijosa.com/api"
+          value: "http://generadorec.dmarmijosa.com/api"
         resources:
           requests:
             memory: "256Mi"
