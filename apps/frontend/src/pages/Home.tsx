@@ -165,45 +165,68 @@ const Home = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
               {previewData.map((person, index) => (
-                <div key={index} className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+                <div
+                  key={index}
+                  className="bg-white p-4 sm:p-6 rounded-lg shadow-lg"
+                >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-base sm:text-lg font-semibold text-ecuador-blue">
                       Registro #{index + 1}
                     </h3>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      person.genero === 'M' 
-                        ? 'bg-blue-100 text-blue-800' 
-                        : 'bg-pink-100 text-pink-800'
-                    }`}>
-                      {person.genero === 'M' ? 'Masculino' : 'Femenino'}
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        person.genero === "M"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-pink-100 text-pink-800"
+                      }`}
+                    >
+                      {person.genero === "M" ? "Masculino" : "Femenino"}
                     </span>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <div>
-                      <span className="text-xs text-gray-500 block">Cédula:</span>
-                      <p className="font-mono text-sm font-medium">{person.cedula}</p>
+                      <span className="text-xs text-gray-500 block">
+                        Cédula:
+                      </span>
+                      <p className="font-mono text-sm font-medium">
+                        {person.cedula}
+                      </p>
                     </div>
-                    
+
                     <div>
-                      <span className="text-xs text-gray-500 block">Nombre:</span>
-                      <p className="text-sm font-medium">{person.nombre} {person.apellido}</p>
+                      <span className="text-xs text-gray-500 block">
+                        Nombre:
+                      </span>
+                      <p className="text-sm font-medium">
+                        {person.nombre} {person.apellido}
+                      </p>
                     </div>
-                    
+
                     <div>
-                      <span className="text-xs text-gray-500 block">Profesión:</span>
+                      <span className="text-xs text-gray-500 block">
+                        Profesión:
+                      </span>
                       <p className="text-sm">{person.profesion}</p>
                     </div>
-                    
+
                     <div>
-                      <span className="text-xs text-gray-500 block">Ubicación:</span>
-                      <p className="text-sm">{person.canton}, {person.provincia}</p>
+                      <span className="text-xs text-gray-500 block">
+                        Ubicación:
+                      </span>
+                      <p className="text-sm">
+                        {person.canton}, {person.provincia}
+                      </p>
                     </div>
-                    
+
                     <div>
-                      <span className="text-xs text-gray-500 block">Contacto:</span>
+                      <span className="text-xs text-gray-500 block">
+                        Contacto:
+                      </span>
                       <p className="text-xs font-mono">{person.telefono}</p>
-                      <p className="text-xs break-all text-gray-600">{person.email}</p>
+                      <p className="text-xs break-all text-gray-600">
+                        {person.email}
+                      </p>
                     </div>
                   </div>
                 </div>
