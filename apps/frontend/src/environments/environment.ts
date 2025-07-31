@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: "http://localhost:3001/api",
+  apiUrl: "/api",
   domain: "generadorec.dmarmijosa.com",
   supportEmail: "support-client@dmarmijosa.com",
   author: {
