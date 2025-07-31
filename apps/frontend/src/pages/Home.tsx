@@ -9,7 +9,10 @@ const Home = () => {
   const [copyMessage, setCopyMessage] = useState<string>("");
 
   // Función para copiar datos de una persona al portapapeles en formato JSON
-  const copyPersonDataToClipboard = async (person: GeneratedData, index: number) => {
+  const copyPersonDataToClipboard = async (
+    person: GeneratedData,
+    index: number
+  ) => {
     // Crear objeto JSON limpio con todos los datos
     const jsonData = {
       registro: index + 1,
@@ -24,42 +27,48 @@ const Home = () => {
       canton: person.canton,
       fechaNacimiento: person.fechaNacimiento,
       genero: person.genero,
-      generoTexto: person.genero === 'M' ? 'Masculino' : 'Femenino',
+      generoTexto: person.genero === "M" ? "Masculino" : "Femenino",
       profesion: person.profesion,
       ...(person.ruc && { ruc: person.ruc }),
-      ...(person.empresa && { empresa: person.empresa })
+      ...(person.empresa && { empresa: person.empresa }),
     };
 
     const jsonString = JSON.stringify(jsonData, null, 2);
 
     try {
       await navigator.clipboard.writeText(jsonString);
-      
+
       // Mostrar mensaje de confirmación
       setCopyMessage(`✅ Registro #${index + 1} copiado como JSON`);
       setTimeout(() => setCopyMessage(""), 3000);
-      
+
       // Mostrar feedback visual temporal en la tarjeta
       const element = document.getElementById(`person-card-${index}`);
       if (element) {
-        element.classList.add('bg-green-50', 'border-green-200', 'border-2');
+        element.classList.add("bg-green-50", "border-green-200", "border-2");
         setTimeout(() => {
-          element.classList.remove('bg-green-50', 'border-green-200', 'border-2');
+          element.classList.remove(
+            "bg-green-50",
+            "border-green-200",
+            "border-2"
+          );
         }, 1500);
       }
     } catch (err) {
-      console.error('Error al copiar al portapapeles:', err);
+      console.error("Error al copiar al portapapeles:", err);
       // Fallback para navegadores que no soportan clipboard
-      const textArea = document.createElement('textarea');
+      const textArea = document.createElement("textarea");
       textArea.value = jsonString;
       document.body.appendChild(textArea);
       textArea.select();
       try {
-        document.execCommand('copy');
-        setCopyMessage(`✅ Registro #${index + 1} copiado como JSON (fallback)`);
+        document.execCommand("copy");
+        setCopyMessage(
+          `✅ Registro #${index + 1} copiado como JSON (fallback)`
+        );
         setTimeout(() => setCopyMessage(""), 3000);
       } catch (fallbackErr) {
-        console.error('Error en fallback:', fallbackErr);
+        console.error("Error en fallback:", fallbackErr);
         setCopyMessage(`❌ Error al copiar al portapapeles`);
         setTimeout(() => setCopyMessage(""), 3000);
       }
@@ -232,7 +241,8 @@ const Home = () => {
               Ejemplo de datos que puedes generar con nuestra herramienta
             </p>
             <p className="text-sm text-ecuador-blue px-4 font-medium">
-              💡 Haz clic en cualquier tarjeta para copiar los datos en formato JSON
+              💡 Haz clic en cualquier tarjeta para copiar los datos en formato
+              JSON
             </p>
           </div>
 
@@ -256,9 +266,9 @@ const Home = () => {
                       Registro #{index + 1}
                     </h3>
                     <div className="flex items-center gap-2">
-                      <Copy 
-                        size={16} 
-                        className="text-gray-400 hover:text-ecuador-blue transition-colors" 
+                      <Copy
+                        size={16}
+                        className="text-gray-400 hover:text-ecuador-blue transition-colors"
                       />
                       <span
                         className={`px-2 py-1 text-xs rounded-full ${
@@ -311,7 +321,9 @@ const Home = () => {
                       <span className="text-xs text-gray-500 block">
                         Contacto:
                       </span>
-                      <p className="text-xs font-mono text-black">{person.telefono}</p>
+                      <p className="text-xs font-mono text-black">
+                        {person.telefono}
+                      </p>
                       <p className="text-xs break-all text-gray-600">
                         {person.email}
                       </p>

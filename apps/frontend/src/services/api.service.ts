@@ -1,4 +1,4 @@
-import { config, logConfig } from '../config/config';
+import { config, logConfig } from "../config/config";
 
 // Log de configuración al importar (solo en desarrollo)
 logConfig();

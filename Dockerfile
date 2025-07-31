@@ -52,12 +52,15 @@ RUN adduser -S nextjs -u 1001
 RUN chown -R nextjs:nodejs /app
 USER nextjs
 
-# Exponer puerto
-EXPOSE 3000
-
 # Variables de entorno
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV CORS_ORIGINS="http://localhost:3000,https://generadorec.dmarmijosa.com"
+ENV APP_NAME="GeneradorEC"
+ENV APP_VERSION="1.0.0"
+
+# Exponer puerto
+EXPOSE 3000
 
 # Comando de inicio
 CMD ["node", "dist/main"]

@@ -8,7 +8,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   // Configurar CORS con variables de entorno
-  const corsOrigins = process.env.CORS_ORIGINS 
+  const corsOrigins = process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(',')
     : ['http://localhost:5173', 'http://localhost:3000'];
 
@@ -22,10 +22,10 @@ async function bootstrap() {
   const nodeEnv = process.env.NODE_ENV || 'development';
 
   await app.listen(port);
-  
+
   console.log(`🚀 Backend ejecutándose en http://localhost:${port}`);
   console.log(`📦 Entorno: ${nodeEnv}`);
   console.log(`🌐 CORS habilitado para: ${corsOrigins.join(', ')}`);
 }
 
-bootstrap();
+void bootstrap();

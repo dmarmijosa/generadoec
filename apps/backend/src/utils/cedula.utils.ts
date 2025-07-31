@@ -13,7 +13,7 @@ export class CedulaUtils {
 
     // Generar los siguientes 6 dígitos aleatorios
     const remainingDigits = this.generateRandomDigits(6);
-    
+
     // Los primeros 9 dígitos son: provincia + tercer dígito + 6 dígitos aleatorios
     const firstNineDigits = province + thirdDigit + remainingDigits;
 
