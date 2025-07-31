@@ -1,11 +1,51 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, Zap, Users } from "lucide-react";
+import { ArrowRight, Shield, Zap, Users, Copy } from "lucide-react";
 import { apiService, type GeneratedData } from "../services/api.service";
 
 const Home = () => {
   const [previewData, setPreviewData] = useState<GeneratedData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Función para copiar datos de una persona al portapapeles
+  const copyPersonDataToClipboard = async (person: GeneratedData, index: number) => {
+    const dataText = `
+=== REGISTRO #${index + 1} ===
+Cédula: ${person.cedula}
+Nombre: ${person.nombre} ${person.apellido}
+Email: ${person.email}
+Teléfono: ${person.telefono}
+Dirección: ${person.direccion}
+Provincia: ${person.provincia}
+Cantón: ${person.canton}
+Fecha de Nacimiento: ${person.fechaNacimiento}
+Género: ${person.genero === 'M' ? 'Masculino' : 'Femenino'}
+Profesión: ${person.profesion}
+${person.ruc ? `RUC: ${person.ruc}` : ''}
+${person.empresa ? `Empresa: ${person.empresa}` : ''}
+`.trim();
+
+    try {
+      await navigator.clipboard.writeText(dataText);
+      // Mostrar feedback visual temporal
+      const element = document.getElementById(`person-card-${index}`);
+      if (element) {
+        element.classList.add('bg-green-50', 'border-green-200');
+        setTimeout(() => {
+          element.classList.remove('bg-green-50', 'border-green-200');
+        }, 1000);
+      }
+    } catch (err) {
+      console.error('Error al copiar al portapapeles:', err);
+      // Fallback para navegadores que no soportan clipboard
+      const textArea = document.createElement('textarea');
+      textArea.value = dataText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+  };
 
   // Cargar datos de ejemplo al montar el componente
   useEffect(() => {
@@ -167,21 +207,30 @@ const Home = () => {
               {previewData.map((person, index) => (
                 <div
                   key={index}
-                  className="bg-white p-4 sm:p-6 rounded-lg shadow-lg"
+                  id={`person-card-${index}`}
+                  onClick={() => copyPersonDataToClipboard(person, index)}
+                  className="bg-white p-4 sm:p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-transparent hover:border-ecuador-blue/20"
+                  title="Haz clic para copiar todos los datos al portapapeles"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-base sm:text-lg font-semibold text-ecuador-blue">
                       Registro #{index + 1}
                     </h3>
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${
-                        person.genero === "M"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-pink-100 text-pink-800"
-                      }`}
-                    >
-                      {person.genero === "M" ? "Masculino" : "Femenino"}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <Copy 
+                        size={16} 
+                        className="text-gray-400 hover:text-ecuador-blue transition-colors" 
+                      />
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${
+                          person.genero === "M"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-pink-100 text-pink-800"
+                        }`}
+                      >
+                        {person.genero === "M" ? "Masculino" : "Femenino"}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="space-y-3">
