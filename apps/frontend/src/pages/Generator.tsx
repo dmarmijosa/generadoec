@@ -120,6 +120,17 @@ const Generator = () => {
       });
   };
 
+  const copyTextToClipboard = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        alert("Registro copiado al portapapeles");
+      })
+      .catch(() => {
+        alert("Error al copiar registro");
+      });
+  };
+
   const getFieldLabel = (field: string) => {
     const labels: Record<string, string> = {
       cedula: "Cédula",
@@ -270,45 +281,47 @@ const Generator = () => {
               ) : (
                 <>
                   {/* Desktop/Tablet Table View */}
-                  <div className="hidden md:block overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          {Object.entries(selectedFields)
-                            .filter(([, checked]) => checked)
-                            .map(([field]) => (
-                              <th
-                                key={field}
-                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                              >
-                                {getFieldLabel(field)}
-                              </th>
-                            ))}
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {generatedData.map((row, index) => (
-                          <tr key={index} className="hover:bg-gray-50">
+                  <div className="hidden lg:block">
+                    <div className="overflow-x-auto shadow-sm border border-gray-200 rounded-lg">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
                             {Object.entries(selectedFields)
                               .filter(([, checked]) => checked)
                               .map(([field]) => (
-                                <td
+                                <th
                                   key={field}
-                                  className="px-6 py-4 text-sm text-gray-900"
+                                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 bg-gray-50"
                                 >
-                                  <span className="break-all">
-                                    {row[field as keyof GeneratedData]}
-                                  </span>
-                                </td>
+                                  {getFieldLabel(field)}
+                                </th>
                               ))}
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {generatedData.map((row, index) => (
+                            <tr key={index} className="hover:bg-gray-50">
+                              {Object.entries(selectedFields)
+                                .filter(([, checked]) => checked)
+                                .map(([field]) => (
+                                  <td
+                                    key={field}
+                                    className="px-4 py-3 text-sm text-gray-900 max-w-xs"
+                                  >
+                                    <div className="break-words overflow-hidden">
+                                      {row[field as keyof GeneratedData]}
+                                    </div>
+                                  </td>
+                                ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
 
-                  {/* Mobile Card View */}
-                  <div className="md:hidden space-y-4 p-4">
+                  {/* Mobile & Tablet Card View */}
+                  <div className="lg:hidden space-y-4">
                     {generatedData.map((row, index) => (
                       <div
                         key={index}
@@ -329,22 +342,23 @@ const Generator = () => {
                                     }`
                                 )
                                 .join("\n");
-                              navigator.clipboard.writeText(text);
+                              copyTextToClipboard(text);
                             }}
-                            className="text-gray-400 hover:text-gray-600"
+                            className="text-gray-400 hover:text-gray-600 p-1"
+                            title="Copiar registro"
                           >
                             <Copy size={16} />
                           </button>
                         </div>
-                        <div className="space-y-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           {Object.entries(selectedFields)
                             .filter(([, checked]) => checked)
                             .map(([field]) => (
-                              <div key={field} className="flex flex-col">
-                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                  {getFieldLabel(field)}
+                              <div key={field} className="space-y-1">
+                                <span className="text-xs text-gray-500 font-medium block">
+                                  {getFieldLabel(field)}:
                                 </span>
-                                <span className="text-sm text-gray-900 mt-1 break-all">
+                                <span className="text-sm text-gray-900 break-words block">
                                   {row[field as keyof GeneratedData]}
                                 </span>
                               </div>

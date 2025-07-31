@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Header from "./components/Header";
 import DisclaimerBanner from "./components/DisclaimerBanner";
 import FloatingCoffeeButton from "./components/FloatingCoffeeButton";
@@ -20,6 +25,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/generator" element={<Generator />} />
               <Route path="/about" element={<About />} />
+              {/* Ruta catch-all para redirigir rutas no encontradas al home */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
         </main>
