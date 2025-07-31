@@ -90,6 +90,37 @@ kubectl apply -f k8s/argocd-application.yaml
 kubectl get applications -n argocd
 ```
 
+## 🔧 Quick Fix para TLS Issues
+
+Si encuentras problemas con HTTPS/TLS (certificados inválidos), usa el despliegue HTTP temporal:
+
+### Opción 1: Script Automático
+```bash
+# En tu servidor remoto
+git pull origin main
+chmod +x deploy-complete.sh
+./deploy-complete.sh
+```
+
+### Opción 2: Comandos Manuales
+```bash
+# Crear namespace
+kubectl create namespace generadorec --dry-run=client -o yaml | kubectl apply -f -
+
+# Aplicar manifiestos
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/service.yaml  
+kubectl apply -f k8s/deployment.yaml
+
+# Usar ingress sin TLS
+kubectl delete ingress generadorec-ingress -n generadorec --ignore-not-found=true
+kubectl apply -f k8s/ingress-no-tls.yaml
+```
+
+**Después accede a:** http://generadorec.dmarmijosa.com
+
+---
+
 ## 🔧 Configuración Post-Despliegue
 
 ### 1. Verificar el Despliegue
