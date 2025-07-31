@@ -4,32 +4,62 @@ import { ArrowRight, Shield, Zap, Users } from "lucide-react";
 import { apiService, type GeneratedData } from "../services/api.service";
 
 const Home = () => {
-  const [previewData, setPreviewData] = useState<GeneratedData | null>(null);
+  const [previewData, setPreviewData] = useState<GeneratedData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Cargar datos de ejemplo al montar el componente
   useEffect(() => {
     const loadPreviewData = async () => {
       try {
-        const data = await apiService.generateQuickData(1);
-        if (data.length > 0) {
-          setPreviewData(data[0]);
-        }
+        setIsLoading(true);
+        const data = await apiService.generateQuickData(3);
+        setPreviewData(data);
       } catch (error) {
         console.error("Error al cargar datos de vista previa:", error);
         // Datos de ejemplo por defecto
-        setPreviewData({
-          cedula: "1724567890",
-          nombre: "María Elena",
-          apellido: "Rodríguez Vásquez",
-          email: "maria.rodriguez@example.com",
-          telefono: "+593 98 123 4567",
-          direccion: "Av. República del Salvador N34-183",
-          provincia: "Pichincha",
-          canton: "Quito",
-          fechaNacimiento: "1990-03-15",
-          genero: "F",
-          profesion: "Ingeniera",
-        });
+        setPreviewData([
+          {
+            cedula: "1724567890",
+            nombre: "María Elena",
+            apellido: "Rodríguez Vásquez",
+            email: "maria.rodriguez@example.com",
+            telefono: "+593 98 123 4567",
+            direccion: "Av. República del Salvador N34-183",
+            provincia: "Pichincha",
+            canton: "Quito",
+            fechaNacimiento: "1990-03-15",
+            genero: "F",
+            profesion: "Ingeniera",
+          },
+          {
+            cedula: "0926781345",
+            nombre: "Carlos Alberto",
+            apellido: "García López",
+            email: "carlos.garcia@example.com",
+            telefono: "+593 97 987 6543",
+            direccion: "Calle Bolívar N125",
+            provincia: "Guayas",
+            canton: "Guayaquil",
+            fechaNacimiento: "1985-07-22",
+            genero: "M",
+            profesion: "Médico",
+          },
+          {
+            cedula: "0103456789",
+            nombre: "Ana Sofía",
+            apellido: "Martínez Pérez",
+            email: "ana.martinez@example.com",
+            telefono: "+593 96 555 1234",
+            direccion: "Av. Huayna Cápac N456",
+            provincia: "Azuay",
+            canton: "Cuenca",
+            fechaNacimiento: "1993-12-08",
+            genero: "F",
+            profesion: "Abogada",
+          },
+        ]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -126,86 +156,69 @@ const Home = () => {
               Ejemplo de datos que puedes generar con nuestra herramienta
             </p>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto">
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
-              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-ecuador-blue">
-                Datos Personales
-              </h3>
-              <div className="space-y-2 sm:space-y-3">
-                <div>
-                  <span className="text-xs sm:text-sm text-gray-500">
-                    Cédula:
-                  </span>
-                  <p className="font-mono text-sm sm:text-base">
-                    {previewData?.cedula || "1234567890"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs sm:text-sm text-gray-500">
-                    Nombre:
-                  </span>
-                  <p className="text-sm sm:text-base">
-                    {previewData
-                      ? `${previewData.nombre} ${previewData.apellido}`
-                      : "María Elena Rodríguez Vásquez"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs sm:text-sm text-gray-500">
-                    Provincia:
-                  </span>
-                  <p className="text-sm sm:text-base">
-                    {previewData?.provincia || "Pichincha"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs sm:text-sm text-gray-500">
-                    Ciudad:
-                  </span>
-                  <p className="text-sm sm:text-base">
-                    {previewData?.canton || "Quito"}
-                  </p>
-                </div>
-              </div>
+
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ecuador-blue mx-auto mb-4"></div>
+              <p className="text-gray-600">Cargando datos de ejemplo...</p>
             </div>
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
-              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-ecuador-blue">
-                Datos de Contacto
-              </h3>
-              <div className="space-y-2 sm:space-y-3">
-                <div>
-                  <span className="text-xs sm:text-sm text-gray-500">
-                    Teléfono:
-                  </span>
-                  <p className="font-mono text-sm sm:text-base">
-                    {previewData?.telefono || "+593 98 123 4567"}
-                  </p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
+              {previewData.map((person, index) => (
+                <div key={index} className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-base sm:text-lg font-semibold text-ecuador-blue">
+                      Registro #{index + 1}
+                    </h3>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      person.genero === 'M' 
+                        ? 'bg-blue-100 text-blue-800' 
+                        : 'bg-pink-100 text-pink-800'
+                    }`}>
+                      {person.genero === 'M' ? 'Masculino' : 'Femenino'}
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-xs text-gray-500 block">Cédula:</span>
+                      <p className="font-mono text-sm font-medium">{person.cedula}</p>
+                    </div>
+                    
+                    <div>
+                      <span className="text-xs text-gray-500 block">Nombre:</span>
+                      <p className="text-sm font-medium">{person.nombre} {person.apellido}</p>
+                    </div>
+                    
+                    <div>
+                      <span className="text-xs text-gray-500 block">Profesión:</span>
+                      <p className="text-sm">{person.profesion}</p>
+                    </div>
+                    
+                    <div>
+                      <span className="text-xs text-gray-500 block">Ubicación:</span>
+                      <p className="text-sm">{person.canton}, {person.provincia}</p>
+                    </div>
+                    
+                    <div>
+                      <span className="text-xs text-gray-500 block">Contacto:</span>
+                      <p className="text-xs font-mono">{person.telefono}</p>
+                      <p className="text-xs break-all text-gray-600">{person.email}</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-xs sm:text-sm text-gray-500">
-                    Email:
-                  </span>
-                  <p className="text-sm sm:text-base break-all">
-                    {previewData?.email || "maria.rodriguez@example.com"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs sm:text-sm text-gray-500">
-                    Dirección:
-                  </span>
-                  <p className="text-sm sm:text-base">
-                    {previewData?.direccion ||
-                      "Av. República del Salvador N34-183"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs sm:text-sm text-gray-500">
-                    Código Postal:
-                  </span>
-                  <p className="text-sm sm:text-base">170517</p>
-                </div>
-              </div>
+              ))}
             </div>
+          )}
+
+          <div className="text-center mt-8">
+            <Link
+              to="/generator"
+              className="inline-flex items-center px-6 py-3 bg-ecuador-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Generar Más Datos
+              <ArrowRight size={20} className="ml-2" />
+            </Link>
           </div>
         </div>
       </section>
