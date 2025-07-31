@@ -5,12 +5,14 @@
 ![NestJS](https://img.shields.io/badge/NestJS-10.0.0-E0234E?style=flat-square&logo=nestjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6.0-3178C6?style=flat-square&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.3.0-38B2AC?style=flat-square&logo=tailwind-css)
+![Swagger](https://img.shields.io/badge/Swagger-API_Docs-85EA2D?style=flat-square&logo=swagger)
 
 ## 📋 Descripción
 
 GeneradorEC es una herramienta web completa para generar datos ecuatorianos válidos como cédulas de identidad, nombres, direcciones, teléfonos y más información específica de Ecuador. Inspirado en herramientas similares como generadordni.es, pero adaptado completamente a la realidad ecuatoriana.
 
 🌐 **Sitio Web**: [https://generadorec.dmarmijosa.com](https://generadorec.dmarmijosa.com)
+📚 **API Docs**: [http://localhost:3000/api/docs](http://localhost:3000/api/docs) (desarrollo)
 
 ## ✨ Características
 
@@ -18,6 +20,9 @@ GeneradorEC es una herramienta web completa para generar datos ecuatorianos vál
 - 👤 **Datos Personales**: Nombres y apellidos típicos ecuatorianos
 - 📍 **Direcciones Reales**: Ubicaciones por provincia y cantón
 - 📱 **Teléfonos**: Números móviles y fijos con códigos correctos
+- 🏢 **Empresas**: Razones sociales y RUC válidos
+- 📖 **API REST**: Documentada con Swagger para integración
+- 🔄 **Datos Dinámicos**: Backend centralizado sin datos hardcodeados
 - ✉️ **Emails**: Direcciones de correo electrónico válidas
 - 📅 **Fechas**: Fechas de nacimiento realistas
 - 💼 **Profesiones**: Ocupaciones comunes en Ecuador
@@ -31,17 +36,80 @@ GeneradorEC es una herramienta web completa para generar datos ecuatorianos vál
 - **Vite** como bundler
 - **React Router** para navegación
 - **Lucide React** para iconos
+- **Integración con API REST**
 
 ### Backend
 - **NestJS** con TypeScript
-- **API RESTful**
+- **API RESTful** completamente documentada
+- **Swagger/OpenAPI** para documentación automática
 - **Algoritmos de validación ecuatorianos**
-- **Base de datos de nombres y lugares**
+- **Base de datos centralizada** de nombres y lugares
+- **Endpoints optimizados** para diferentes tipos de datos
 
 ### DevOps
 - **Docker** para contenedores
 - **Kubernetes** para orquestación
 - **ArgoCD** para despliegue continuo
+
+## 📚 API Documentation
+
+La API está completamente documentada con Swagger y disponible en:
+
+### Endpoints Principales
+
+#### 🔍 Datos Rápidos
+```
+GET /api/generator/quick?quantity=5&province=Pichincha
+```
+Genera una muestra rápida de datos para la página principal.
+
+#### 👥 Generar Personas
+```
+POST /api/generator/people
+Content-Type: application/json
+
+{
+  "quantity": 10,
+  "includeRuc": false,
+  "includeCompany": false,
+  "province": "Pichincha",
+  "ageRange": { "min": 18, "max": 65 }
+}
+```
+
+#### 🏢 Generar Empresas
+```
+POST /api/generator/companies
+Content-Type: application/json
+
+{
+  "quantity": 5,
+  "province": "Guayas"
+}
+```
+
+#### 🗺️ Obtener Provincias
+```
+GET /api/generator/provinces
+```
+Devuelve el listado completo de provincias ecuatorianas con sus cantones.
+
+### Acceso a la Documentación
+
+- **Desarrollo**: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
+- **Producción**: [https://generadorec.dmarmijosa.com/api/docs](https://generadorec.dmarmijosa.com/api/docs)
+
+### Respuesta Estándar
+Todos los endpoints devuelven un formato consistente:
+
+```json
+{
+  "success": true,
+  "data": [...],
+  "count": 10,
+  "timestamp": "2025-01-31T02:17:29.054Z"
+}
+```
 
 ## 🛠️ Instalación y Desarrollo
 

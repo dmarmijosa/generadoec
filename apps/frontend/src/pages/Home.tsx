@@ -85,48 +85,8 @@ const Home = () => {
         setPreviewData(data);
       } catch (error) {
         console.error("Error al cargar datos de vista previa:", error);
-        // Datos de ejemplo por defecto
-        setPreviewData([
-          {
-            cedula: "1724567890",
-            nombre: "María Elena",
-            apellido: "Rodríguez Vásquez",
-            email: "maria.rodriguez@example.com",
-            telefono: "+593 98 123 4567",
-            direccion: "Av. República del Salvador N34-183",
-            provincia: "Pichincha",
-            canton: "Quito",
-            fechaNacimiento: "1990-03-15",
-            genero: "F",
-            profesion: "Ingeniera",
-          },
-          {
-            cedula: "0926781345",
-            nombre: "Carlos Alberto",
-            apellido: "García López",
-            email: "carlos.garcia@example.com",
-            telefono: "+593 97 987 6543",
-            direccion: "Calle Bolívar N125",
-            provincia: "Guayas",
-            canton: "Guayaquil",
-            fechaNacimiento: "1985-07-22",
-            genero: "M",
-            profesion: "Médico",
-          },
-          {
-            cedula: "0103456789",
-            nombre: "Ana Sofía",
-            apellido: "Martínez Pérez",
-            email: "ana.martinez@example.com",
-            telefono: "+593 96 555 1234",
-            direccion: "Av. Huayna Cápac N456",
-            provincia: "Azuay",
-            canton: "Cuenca",
-            fechaNacimiento: "1993-12-08",
-            genero: "F",
-            profesion: "Abogada",
-          },
-        ]);
+        // En caso de error, mostrar un mensaje al usuario
+        setPreviewData([]);
       } finally {
         setIsLoading(false);
       }
@@ -250,6 +210,16 @@ const Home = () => {
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ecuador-blue mx-auto mb-4"></div>
               <p className="text-gray-600">Cargando datos de ejemplo...</p>
+            </div>
+          ) : previewData.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🔌</div>
+              <p className="text-gray-600 mb-2">
+                No se pudieron cargar los datos de ejemplo
+              </p>
+              <p className="text-sm text-gray-500">
+                Verifica tu conexión con el servidor
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">

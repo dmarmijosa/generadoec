@@ -1,4 +1,14 @@
-import { Github, Mail, Heart, Code, Coffee, Globe, User } from "lucide-react";
+import {
+  Github,
+  Mail,
+  Heart,
+  Code,
+  Coffee,
+  Globe,
+  User,
+  Database,
+  Book,
+} from "lucide-react";
 import { environment } from "../environments/environment";
 
 const About = () => {
@@ -96,6 +106,72 @@ const About = () => {
               Nombres, direcciones y datos específicos de la realidad
               ecuatoriana
             </p>
+          </div>
+        </div>
+      </div>
+
+      {/* API Section */}
+      <div className="bg-gradient-to-r from-ecuador-blue to-blue-600 rounded-lg p-4 sm:p-6 lg:p-8 mb-8 sm:mb-12 text-white">
+        <div className="text-center mb-6">
+          <Database size={32} className="mx-auto mb-4" />
+          <h2 className="text-xl sm:text-2xl font-bold mb-4">
+            API REST Completa
+          </h2>
+          <p className="text-sm sm:text-base text-blue-100 max-w-2xl mx-auto">
+            Integra GeneradorEC en tus proyectos con nuestra API REST
+            completamente documentada
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white/10 rounded-lg p-4">
+            <h3 className="font-semibold mb-3 flex items-center">
+              <Book size={20} className="mr-2" />
+              Documentación Swagger
+            </h3>
+            <p className="text-sm text-blue-100 mb-4">
+              API completamente documentada con ejemplos interactivos y esquemas
+              de datos.
+            </p>
+            <a
+              href={`${environment.apiUrl}/docs`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center bg-white text-ecuador-blue px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition-colors"
+            >
+              Ver Documentación
+              <Globe size={16} className="ml-2" />
+            </a>
+          </div>
+
+          <div className="bg-white/10 rounded-lg p-4">
+            <h3 className="font-semibold mb-3">Endpoints Principales</h3>
+            <ul className="space-y-2 text-sm text-blue-100">
+              <li>
+                <code className="bg-white/20 px-2 py-1 rounded">
+                  GET /api/generator/quick
+                </code>{" "}
+                - Datos rápidos
+              </li>
+              <li>
+                <code className="bg-white/20 px-2 py-1 rounded">
+                  POST /api/generator/people
+                </code>{" "}
+                - Generar personas
+              </li>
+              <li>
+                <code className="bg-white/20 px-2 py-1 rounded">
+                  POST /api/generator/companies
+                </code>{" "}
+                - Generar empresas
+              </li>
+              <li>
+                <code className="bg-white/20 px-2 py-1 rounded">
+                  GET /api/generator/provinces
+                </code>{" "}
+                - Lista provincias
+              </li>
+            </ul>
           </div>
         </div>
       </div>
