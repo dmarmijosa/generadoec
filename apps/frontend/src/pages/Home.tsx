@@ -144,7 +144,7 @@ const Home = () => {
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-ecuador-yellow rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <Shield size={28} className="text-ecuador-blue sm:w-8 sm:h-8" />
             </div>
-            <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">
+            <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-ecuador-blue">
               Datos Válidos
             </h3>
             <p className="text-gray-600 text-sm sm:text-base px-2">
@@ -156,7 +156,7 @@ const Home = () => {
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-ecuador-red rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <Zap size={28} className="text-white sm:w-8 sm:h-8" />
             </div>
-            <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">
+            <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-ecuador-blue">
               Rápido y Fácil
             </h3>
             <p className="text-gray-600 text-sm sm:text-base px-2">
@@ -168,7 +168,7 @@ const Home = () => {
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-ecuador-blue rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <Users size={28} className="text-white sm:w-8 sm:h-8" />
             </div>
-            <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">
+            <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-ecuador-blue">
               Múltiples Tipos
             </h3>
             <p className="text-gray-600 text-sm sm:text-base px-2">
