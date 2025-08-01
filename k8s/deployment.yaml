@@ -6,21 +6,28 @@ metadata:
   labels:
     app: generadorec
     component: app
+    managed-by: argocd
+    version: v1.0.9
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: generadorec
       component: app
+      managed-by: argocd
+      version: v1.0.9
   template:
     metadata:
       labels:
         app: generadorec
         component: app
+        managed-by: argocd
+        version: v1.0.9
     spec:
       containers:
       - name: generadorec
         image: dmarmijosa/generadorec:v1.0.9
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
           name: http
@@ -32,7 +39,7 @@ spec:
         - name: API_URL
           value: "https://generadorec.dmarmijosa.com/api"
         - name: CACHE_BUST
-          value: "v1.0.4-20250801"
+          value: "v1.0.9-20250801"
         resources:
           requests:
             memory: "256Mi"
