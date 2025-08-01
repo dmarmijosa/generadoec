@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: generadorec
-        image: dmarmijosa/generadorec:v1.0.3
+        image: dmarmijosa/generadorec:v1.0.4
         ports:
         - containerPort: 3000
           name: http

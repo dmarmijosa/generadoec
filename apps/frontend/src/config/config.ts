@@ -30,7 +30,17 @@ const getEnvVar = (name: string, defaultValue: string = ""): string => {
 };
 
 // Detectar si estamos en producción
-const isProduction = getEnvVar("NODE_ENV", "development") === "production";
+const isProduction = 
+  getEnvVar("NODE_ENV", "development") === "production" ||
+  getEnvVar("VITE_NODE_ENV", "development") === "production" ||
+  import.meta.env.PROD === true;
+
+// Obtener información de build
+const buildInfo = {
+  version: getEnvVar("VITE_APP_VERSION", "1.0.3"),
+  buildDate: getEnvVar("VITE_BUILD_DATE", new Date().toISOString()),
+  commitHash: getEnvVar("VITE_COMMIT_HASH", "unknown"),
+};
 
 // Configuración dinámica
 export const config = {
@@ -79,7 +89,9 @@ export const config = {
   // Configuración de la aplicación
   app: {
     name: getEnvVar("APP_NAME", "GeneradorEC"),
-    version: getEnvVar("APP_VERSION", "1.0.0"),
+    version: buildInfo.version,
+    buildDate: buildInfo.buildDate,
+    commitHash: buildInfo.commitHash,
     description: getEnvVar(
       "APP_DESCRIPTION",
       "Generador de datos ecuatorianos válidos para desarrollo y testing"
@@ -87,15 +99,22 @@ export const config = {
   },
 };
 
-// Función para logging de configuración (solo en desarrollo)
+// Función para logging de configuración
 export const logConfig = () => {
-  if (!config.production) {
-    console.log("🔧 Configuración de la aplicación:", {
-      production: config.production,
-      apiUrl: config.apiUrl,
-      port: config.port,
-      baseUrl: config.baseUrl,
-    });
+  const logData = {
+    app: config.app.name,
+    version: config.app.version,
+    environment: config.production ? "production" : "development",
+    buildDate: config.app.buildDate,
+    commitHash: config.app.commitHash,
+    apiUrl: config.apiUrl,
+    baseUrl: config.baseUrl,
+  };
+
+  if (config.production) {
+    console.log("🚀 GeneradorEC en Producción:", logData);
+  } else {
+    console.log("🔧 Configuración de desarrollo:", logData);
   }
 };
 
