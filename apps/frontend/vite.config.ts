@@ -7,7 +7,7 @@ export default defineConfig({
 
   // Configuración para agregar variables de entorno en build time
   define: {
-    "import.meta.env.VITE_APP_VERSION": JSON.stringify("1.0.8"),
+    "import.meta.env.VITE_APP_VERSION": JSON.stringify("1.0.9"),
     "import.meta.env.VITE_BUILD_DATE": JSON.stringify(new Date().toISOString()),
     "import.meta.env.VITE_COMMIT_HASH": JSON.stringify("v1.0.8-" + Date.now()),
     "import.meta.env.VITE_BUILD_TIMESTAMP": JSON.stringify(Date.now()),

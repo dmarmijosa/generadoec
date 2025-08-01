@@ -29,20 +29,15 @@ const getEnvVar = (name: string, defaultValue: string = ""): string => {
   return defaultValue;
 };
 
-// Detectar si estamos en producción de manera más agresiva
-const isProduction =
-  getEnvVar("NODE_ENV", "development") === "production" ||
-  getEnvVar("VITE_NODE_ENV", "development") === "production" ||
-  import.meta.env.PROD === true ||
-  window.location.hostname !== "localhost" ||
-  window.location.protocol === "https:";
+// Detectar si estamos en producción
+const isProduction = import.meta.env.PROD;
 
 // Obtener información de build
 const buildInfo = {
-  version: getEnvVar("VITE_APP_VERSION", "1.0.8"),
+  version: getEnvVar("VITE_APP_VERSION", "1.0.9"),
   buildDate: getEnvVar("VITE_BUILD_DATE", new Date().toISOString()),
   commitHash: getEnvVar("VITE_COMMIT_HASH", "unknown"),
-  timestamp: "CACHE_BUST_PROD_v108_FORCED_" + Date.now(), // Timestamp dinámico para verificar cache busting
+  timestamp: getEnvVar("VITE_BUILD_TIMESTAMP", new Date().toISOString()), // Timestamp de build para cache busting
 };
 
 // Configuración dinámica

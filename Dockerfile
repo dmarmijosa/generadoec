@@ -1,17 +1,13 @@
 # Dockerfile multi-stage para GeneradorEC con Swagger API
 # Etapa 1: Build del Frontend
 FROM node:22-alpine AS frontend-builder
-
+# Dynamic arg to bust Docker cache when changed
+ARG CACHE_BUST=1
 WORKDIR /app
-
-# Copiar package.json del frontend
+# Install frontend dependencies and build
 COPY apps/frontend/package*.json ./frontend/
 RUN cd frontend && npm ci --silent
-
-# Copiar código fuente del frontend
 COPY apps/frontend ./frontend/
-
-# Build del frontend con optimizaciones
 RUN cd frontend && npm run build
 
 # Etapa 2: Build del Backend
