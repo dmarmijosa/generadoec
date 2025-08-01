@@ -30,7 +30,7 @@ const getEnvVar = (name: string, defaultValue: string = ""): string => {
 };
 
 // Detectar si estamos en producción de manera más agresiva
-const isProduction = 
+const isProduction =
   getEnvVar("NODE_ENV", "development") === "production" ||
   getEnvVar("VITE_NODE_ENV", "development") === "production" ||
   import.meta.env.PROD === true ||
