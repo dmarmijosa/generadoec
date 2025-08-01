@@ -7,7 +7,7 @@ metadata:
     app: generadorec
     component: app
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: generadorec
     component: app
@@ -16,3 +16,4 @@ spec:
     protocol: TCP
     port: 3000
     targetPort: 3000
+    nodePort: 30000
