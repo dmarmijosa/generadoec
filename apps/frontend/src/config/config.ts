@@ -34,7 +34,7 @@ const isProduction = import.meta.env.PROD;
 
 // Obtener información de build
 const buildInfo = {
-  version: getEnvVar("VITE_APP_VERSION", "1.0.10"),
+  version: getEnvVar("VITE_APP_VERSION", "1.0.11"),
   buildDate: getEnvVar("VITE_BUILD_DATE", new Date().toISOString()),
   commitHash: getEnvVar("VITE_COMMIT_HASH", "unknown"),
   timestamp: getEnvVar("VITE_BUILD_TIMESTAMP", new Date().toISOString()), // Timestamp de build para cache busting
