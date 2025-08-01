@@ -37,9 +37,10 @@ const isProduction =
 
 // Obtener información de build
 const buildInfo = {
-  version: getEnvVar("VITE_APP_VERSION", "1.0.3"),
+  version: getEnvVar("VITE_APP_VERSION", "1.0.5"),
   buildDate: getEnvVar("VITE_BUILD_DATE", new Date().toISOString()),
   commitHash: getEnvVar("VITE_COMMIT_HASH", "unknown"),
+  timestamp: "1754010087", // Timestamp forzado para verificar cache busting
 };
 
 // Configuración dinámica
@@ -92,6 +93,7 @@ export const config = {
     version: buildInfo.version,
     buildDate: buildInfo.buildDate,
     commitHash: buildInfo.commitHash,
+    timestamp: buildInfo.timestamp,
     description: getEnvVar(
       "APP_DESCRIPTION",
       "Generador de datos ecuatorianos válidos para desarrollo y testing"
@@ -107,6 +109,7 @@ export const logConfig = () => {
     environment: config.production ? "production" : "development",
     buildDate: config.app.buildDate,
     commitHash: config.app.commitHash,
+    timestamp: config.app.timestamp,
     apiUrl: config.apiUrl,
     baseUrl: config.baseUrl,
   };
