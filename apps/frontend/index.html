@@ -39,14 +39,16 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Inyección de variables de entorno desde Vite -->
     <script>
       window.__ENV__ = {
-        VITE_APP_VERSION: import.meta.env.VITE_APP_VERSION,
-        VITE_BUILD_DATE: import.meta.env.VITE_BUILD_DATE,
-        VITE_COMMIT_HASH: import.meta.env.VITE_COMMIT_HASH,
-        VITE_BUILD_TIMESTAMP: import.meta.env.VITE_BUILD_TIMESTAMP,
-        NODE_ENV: import.meta.env.PROD ? 'production' : 'development',
-        VITE_API_URL: import.meta.env.VITE_API_URL || ''
+        VITE_APP_VERSION: "%VITE_APP_VERSION%",
+        VITE_BUILD_DATE: "%VITE_BUILD_DATE%",
+        VITE_COMMIT_HASH: "%VITE_COMMIT_HASH%",
+        VITE_BUILD_TIMESTAMP: "%VITE_BUILD_TIMESTAMP%",
+        NODE_ENV: "%VITE_NODE_ENV%",
+        VITE_API_URL: "%VITE_API_URL%",
+        BASE_URL: "%VITE_BASE_URL%",
       };
     </script>
     <script type="module" src="/src/main.tsx"></script>
