@@ -1,16 +1,16 @@
 # Despliegue manual con Docker + Cloudflared
 
-Este paquete permite desplegar la aplicación sin Kubernetes/ArgoCD, usando solo Docker y un túnel de Cloudflare.
+Este paquete permite desplegar la aplicación sin Kubernetes/ArgoCD, usando solo Docker. Si deseas publicar con Cloudflare Tunnel, gestiona el túnel por fuera de este compose.
 
 Dominios objetivos: generadorec.nexa-code.net (principal) y opcionalmente generadorec.dmarmijosa.com.
 
 ## Arquitectura mínima
 - Contenedor `app`: imagen unificada que sirve API NestJS y el frontend estático en `/:` y `api/*`.
-- Contenedor `cloudflared`: expone el servicio públicamente en Cloudflare y enruta el dominio al contenedor `app`.
+	(Si usas Cloudflare Tunnel, ejecútalo externo a este compose y apunta al host:3500)
 
 ## Requisitos
 - Docker y Docker Compose (v2) instalados
-- Un túnel de Cloudflare válido para `generadorec.nexa-code.net` (puedes usar Token o config.yml + credenciales)
+- (Opcional) Un túnel de Cloudflare para `generadorec.nexa-code.net` si deseas exponer públicamente. Se gestiona fuera del compose.
 
 ## Preparación
 1) Clona el repo en el servidor
@@ -42,8 +42,8 @@ Dominios objetivos: generadorec.nexa-code.net (principal) y opcionalmente genera
 docker compose pull && docker compose up -d
 ```
 
-- App local: http://192.168.1.75:3000
-- Dominio público: https://generadorec.nexa-code.net (vía Cloudflared)
+- App local: http://192.168.1.75:3500
+- Dominio público (si configuras túnel externo): https://generadorec.nexa-code.net
 
 ## Despliegue remoto por SSH (92.176.33.150:1024)
 1) Conéctate al servidor remoto:
@@ -74,8 +74,7 @@ docker compose pull && docker compose up -d
 ```bash
 docker compose ps
 docker compose logs -f app
-docker compose logs -f cloudflared
-curl -sf http://localhost:3000/api/generator/health | jq
+curl -sf http://localhost:3500/api/generator/health | jq
 ```
 
 ## Notas
@@ -85,35 +84,10 @@ curl -sf http://localhost:3000/api/generator/health | jq
 
 ---
 
-## Guía rápida para crear el túnel Cloudflare
+## Publicar con Cloudflare Tunnel (externo)
 
-Puedes hacerlo de dos formas. La más sencilla es por Token.
+Si deseas exponer el servicio por Cloudflare Tunnel, ejecútalo de forma independiente en el host (o en otro host), apuntando al origen:
+- Origen: http://127.0.0.1:3500 (o http://IP_DEL_HOST:3500)
+- Hostname: generadorec.nexa-code.net
 
-### A) Método Token (recomendado y por defecto)
-1. En el panel de Cloudflare Zero Trust, crea un Tunnel nuevo.
-2. Elige la opción de Docker y copia el Token (formato largo). También puedes descargar un YAML de ejemplo.
-3. En este repo, crea el archivo `.env` en `deploy/manual` con:
-
-```
-TUNNEL_TOKEN=pega_aqui_tu_token
-```
-
-4. Levanta el stack (local o remoto). El servicio `cloudflared` usará ese Token y registrará el túnel.
-5. En la sección de “Public Hostnames” del túnel, crea un hostname `generadorec.nexa-code.net` apuntando a `http://app:3000`.
-
-### B) Método Declarativo (config.yml + credencial JSON)
-1. Crea el túnel desde tu máquina con `cloudflared` instalado:
-	- `cloudflared tunnel login`
-	- `cloudflared tunnel create generadorec-tunnel`
-	Esto generará un archivo de credenciales JSON.
-2. Descarga el archivo de credenciales JSON y cópialo a `deploy/manual/cloudflared/generadorec-tunnel.json`.
-3. Edita `deploy/manual/cloudflared/config.yml` y ajusta si es necesario:
-	- `tunnel: generadorec-tunnel`
-	- `credentials-file: /etc/cloudflared/generadorec-tunnel.json`
-	- `ingress` con:
-	  - `hostname: generadorec.nexa-code.net`
-	  - `service: http://app:3000`
-4. En `deploy/manual/docker-compose.yml`, comenta el bloque de Token y descomenta:
-	- `command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run`
-	- `volumes: - ./cloudflared:/etc/cloudflared:ro`
-5. Levanta el stack. El contenedor `cloudflared` leerá la config y conectará el túnel.
+Esto mantiene el compose simple y evita acoplar el túnel al ciclo de vida del contenedor.

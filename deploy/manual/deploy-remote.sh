@@ -66,13 +66,13 @@ fi
 # Comprobar estado
 if command -v curl &>/dev/null; then
   for i in {1..10}; do
-    if curl -fsS http://localhost:3000/api/health >/dev/null; then
+    if curl -fsS http://localhost:3500/api/generator/health >/dev/null; then
       echo "App OK"
       exit 0
     fi
     sleep 3
   done
-  echo "La app aún no responde en /api/health"
+  echo "La app aún no responde en :3500/api/generator/health"
 fi
 EOF
 
