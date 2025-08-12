@@ -1,0 +1,14 @@
+# Opción alternativa declarativa (si no usas TUNNEL_TOKEN)
+# Requiere haber creado un túnel y credenciales JSON
+# Ver: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/configuration-file/
+
+tunnel: generadorec-tunnel
+credentials-file: /etc/cloudflared/generadorec-tunnel.json
+
+ingress:
+  - hostname: generadorec.nexa-code.net
+    service: http://app:3000
+  # Puedes mantener dominios previos si quieres que respondan también
+  - hostname: generadorec.dmarmijosa.com
+    service: http://app:3000
+  - service: http_status:404

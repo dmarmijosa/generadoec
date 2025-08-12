@@ -22,7 +22,14 @@ async function bootstrap() {
     )
     .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addServer('http://localhost:3000', 'Servidor Local')
-    .addServer('https://generadorec.dmarmijosa.com', 'Servidor Producción')
+    .addServer(
+      'https://generadorec.nexa-code.net',
+      'Servidor Producción (Nexa)',
+    )
+    .addServer(
+      'https://generadorec.dmarmijosa.com',
+      'Servidor Producción (legacy)',
+    )
     .addTag('generator', 'Endpoints para generación de datos ecuatorianos')
     .addTag('health', 'Endpoints de estado y salud del servicio')
     .build();

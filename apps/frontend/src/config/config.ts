@@ -55,12 +55,10 @@ export const config = {
   port: parseInt(getEnvVar("PORT", "3000"), 10),
 
   // Dominio y URLs
-  domain: getEnvVar("DOMAIN", "generadorec.dmarmijosa.com"),
+  domain: getEnvVar("DOMAIN", "generadorec.nexa-code.net"),
   baseUrl: getEnvVar(
     "BASE_URL",
-    isProduction
-      ? "https://generadorec.dmarmijosa.com"
-      : "http://localhost:3000"
+    isProduction ? "https://generadorec.nexa-code.net" : "http://localhost:3000"
   ),
 
   // Información de contacto

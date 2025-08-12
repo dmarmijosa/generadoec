@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    image: dmarmijosa/generadorec:v1.0.11
+    container_name: generadorec
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - CORS_ORIGINS=https://generadorec.nexa-code.net,https://generadorec.dmarmijosa.com,http://localhost:5173,http://localhost:3000
+      - APP_NAME=GeneradorEC
+      - APP_VERSION=1.0.11
+      - API_TITLE=GeneradorEC API
+      - API_DESCRIPTION=API para generar datos ecuatorianos válidos para desarrollo y testing
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/generator/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    depends_on:
+      - app
+    # Modo Token (por defecto): define TUNNEL_TOKEN en .env
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    # Alternativa declarativa (requiere credenciales y config.yml):
+    # command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    # volumes:
+    #   - ./cloudflared:/etc/cloudflared:ro

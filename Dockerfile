@@ -51,7 +51,7 @@ USER nextjs
 # Variables de entorno para producción
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV CORS_ORIGINS="http://localhost:3000,https://generadorec.dmarmijosa.com"
+ENV CORS_ORIGINS="http://localhost:3000,https://generadorec.nexa-code.net,https://generadorec.dmarmijosa.com"
 ENV APP_NAME="GeneradorEC"
 ENV APP_VERSION="1.0.0"
 ENV API_TITLE="GeneradorEC API"
@@ -62,7 +62,7 @@ EXPOSE 3000
 
 # Health check para Docker
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
+    CMD node -e "require('http').get('http://localhost:3000/api/generator/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
 
 # Comando de inicio con información de la API
 CMD ["sh", "-c", "echo '🚀 Iniciando GeneradorEC API v${APP_VERSION}' && echo '📚 Documentación Swagger disponible en /api/docs' && node dist/main"]
