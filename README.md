@@ -97,7 +97,7 @@ Devuelve el listado completo de provincias ecuatorianas con sus cantones.
 ### Acceso a la Documentación
 
 - **Desarrollo**: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
-- **Producción**: [https://generadorec.dmarmijosa.com/api/docs](https://generadorec.dmarmijosa.com/api/docs)
+- **Producción**: [https://generadorec.nexa-code.net/api/docs](https://generadorec.nexa-code.net/api/docs)
 
 ### Respuesta Estándar
 Todos los endpoints devuelven un formato consistente:
