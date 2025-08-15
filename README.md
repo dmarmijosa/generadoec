@@ -11,7 +11,7 @@
 
 GeneradorEC es una herramienta web completa para generar datos ecuatorianos válidos como cédulas de identidad, nombres, direcciones, teléfonos y más información específica de Ecuador. Inspirado en herramientas similares como generadordni.es, pero adaptado completamente a la realidad ecuatoriana.
 
-🌐 **Sitio Web**: [https://generadorec.dmarmijosa.com](https://generadorec.dmarmijosa.com)
+🌐 **Sitio Web**: [https://generadorec.nexa-code.net](https://generadorec.nexa-code.net)
 📚 **API Docs**: [http://localhost:3000/api/docs](http://localhost:3000/api/docs) (desarrollo)
 
 ## ✨ Características
